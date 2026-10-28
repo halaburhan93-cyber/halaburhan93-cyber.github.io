@@ -29,22 +29,51 @@ const PROJECTS = [
     about: "تكتب موادك ومواعيد اختباراتها، والذكاء الاصطناعي يرتب لك جدول مذاكرة يومي بالأولويات والاستراحات.",
     note: "توليد الجدول يشتغل داخل Claude، والصفحة تعرض مثالًا منه",
     url: `${GH}/study-planner/`, code: `${REPO}/study-planner` },
+
+  // التسليمات الجامعية: type "pdf" يفتح أو ينزل الملف، و"video" يشتغل داخل البطاقة
+  { cat: "uni", type: "pdf", name: "مجلة الإبداع الرقمي", image: "uni-digital-zine.png",
+    about: "مجلة من ست صفحات عن التصميم الرقمي وعناصره ومجالات الوسائط المتعددة.",
+    file: "university/files/digital-zine.pdf" },
+  { cat: "uni", type: "pdf", name: "عرض تقنية الوسائط المتعددة وتقنيات الويب", image: "uni-specialty-presentation.png",
+    about: "عرض تقديمي من سبع شرائح: وش التخصص، ووش نتعلم فيه، والبرامج، ومجالات العمل.",
+    file: "university/files/specialty-presentation.pdf" },
+  { cat: "uni", type: "video", name: "From Idea to Design", image: "uni-idea-to-design.png",
+    about: "فيديو قصير بالطول عن رحلة العمل من الفكرة إلى التصميم الجرافيكي.",
+    file: "university/files/idea-to-design.mp4" },
+  { cat: "uni", type: "video", name: "إعلان محوّل الوسائط (عربي)", image: "uni-converter-ad-ar.png",
+    about: "فيديو تعريفي يعرض واجهة أداة تحويل الفيديو والصوت وطريقة استخدامها.",
+    file: "university/files/converter-ad-ar.mp4" },
+  { cat: "uni", type: "video", name: "إعلان محوّل الوسائط (إنجليزي)", image: "uni-converter-ad-en.png",
+    about: "النسخة الإنجليزية من الفيديو التعريفي لأداة تحويل الوسائط.",
+    file: "university/files/converter-ad-en.mp4" },
+  { cat: "uni", type: "video", name: "«ملفك ما يشتغل؟»", image: "uni-file-not-working.png",
+    about: "موشن جرافيك قصير عن صيغ الملفات، مقدمة تشويقية لمحوّل الوسائط.",
+    file: "university/files/file-not-working.mp4" },
 ];
 
 function cardHTML(p, imgBase) {
   const cat = CATEGORIES.find(c => c.id === p.cat);
+  const root = imgBase.replace("images/", "");
+  const img = imgBase + p.image;
+  const thumb = p.type === "video"
+    ? `<video controls preload="none" playsinline poster="${img}" src="${root}${p.file}" aria-label="${p.name}"></video>`
+    : `<img src="${img}" alt="معاينة ${p.name}" loading="lazy">`;
+  const buttons = p.type === "pdf"
+    ? `<a class="btn btn-primary" href="${root}${p.file}" target="_blank" rel="noopener">افتح الملف</a>
+       <a class="btn btn-ghost" href="${root}${p.file}" download>تنزيل</a>`
+    : p.type === "video"
+    ? `<a class="btn btn-ghost" href="${root}${p.file}" target="_blank" rel="noopener">افتح بشاشة كاملة</a>`
+    : `<a class="btn btn-primary" href="${p.url}" target="_blank" rel="noopener">افتح المشروع</a>
+       ${p.code ? `<a class="btn btn-ghost" href="${p.code}" target="_blank" rel="noopener">الكود</a>` : ""}`;
   return `
   <article class="card">
-    <div class="thumb"><img src="${imgBase}${p.image}" alt="معاينة ${p.name}" loading="lazy"></div>
+    <div class="thumb${p.type === "video" ? " video" : ""}">${thumb}</div>
     <div class="card-body">
       <span class="tag">${cat.name}</span>
       <h3>${p.name}</h3>
       <p>${p.about}</p>
       ${p.note ? `<span class="note">${p.note}</span>` : ""}
-      <div class="actions">
-        <a class="btn btn-primary" href="${p.url}" target="_blank" rel="noopener">افتح المشروع</a>
-        ${p.code ? `<a class="btn btn-ghost" href="${p.code}" target="_blank" rel="noopener">الكود</a>` : ""}
-      </div>
+      <div class="actions">${buttons}</div>
     </div>
   </article>`;
 }

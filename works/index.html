@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>أعمالي | حلا برهان</title>
+  <meta name="description" content="كل مشاريع حلا برهان وتسليماتها الجامعية">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23d9729a'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Tahoma'>ح</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Reem+Kufi:wght@500;700&display=swap">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="logo" href="../">حلا برهان</a>
+      <ul>
+        <li><a class="link" href="../">الرئيسية</a></li>
+        <li><a class="link" href="./" aria-current="page">أعمالي</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <header class="page-head">
+      <h1>أعمالي</h1>
+      <p>كل مشاريعي وتسليماتي الجامعية في مكان واحد. اختر تصنيفًا أو تصفّحها كلها.</p>
+    </header>
+
+    <div class="filters" id="filters" role="group" aria-label="التصنيفات"></div>
+    <div id="cats"></div>
+  </main>
+
+  <footer>
+    <div class="wrap">صُنع بحب 🌷 · حلا برهان · <a href="../">الرئيسية</a></div>
+  </footer>
+
+  <script src="../projects.js"></script>
+  <script>
+    const filters = document.getElementById("filters");
+    const cats = document.getElementById("cats");
+
+    cats.innerHTML = CATEGORIES.map(c => {
+      const items = PROJECTS.filter(p => p.cat === c.id);
+      return `<section class="cat" id="${c.id}" data-cat="${c.id}">
+        <h2>${c.icon} ${c.name}</h2>
+        ${items.length
+          ? `<div class="grid">${items.map(p => cardHTML(p, "../images/")).join("")}</div>`
+          : `<div class="empty"><b>قريبًا</b>أضيف هنا تسليماتي وواجباتي الجامعية قريبًا.</div>`}
+      </section>`;
+    }).join("");
+
+    const all = [{ id: "all", name: "الكل", n: PROJECTS.length },
+      ...CATEGORIES.map(c => ({ id: c.id, name: c.name, n: PROJECTS.filter(p => p.cat === c.id).length }))];
+    filters.innerHTML = all.map(f =>
+      `<button class="chip" data-f="${f.id}" aria-pressed="false">${f.name}<small>${f.n}</small></button>`).join("");
+
+    function show(id) {
+      filters.querySelectorAll(".chip").forEach(b => b.setAttribute("aria-pressed", b.dataset.f === id));
+      cats.querySelectorAll(".cat").forEach(s => s.hidden = id !== "all" && s.dataset.cat !== id);
+    }
+    filters.addEventListener("click", e => {
+      const b = e.target.closest(".chip"); if (!b) return;
+      show(b.dataset.f);
+      history.replaceState(null, "", b.dataset.f === "all" ? location.pathname : "#" + b.dataset.f);
+    });
+    const start = location.hash.slice(1);
+    show(CATEGORIES.some(c => c.id === start) ? start : "all");
+  </script>
+</body>
+</html>

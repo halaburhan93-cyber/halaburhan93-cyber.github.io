@@ -27,7 +27,6 @@ const PROJECTS = [
     url: `${GH}/media-converter-presentation/`, code: `${REPO}/media-converter-presentation` },
   { cat: "ai", name: "منظّم الدراسة الذكي", image: "study-planner.png",
     about: "تكتب موادك ومواعيد اختباراتها، والذكاء الاصطناعي يرتب لك جدول مذاكرة يومي بالأولويات والاستراحات.",
-    note: "توليد الجدول يشتغل داخل Claude، والصفحة تعرض مثالًا منه",
     url: `${GH}/study-planner/`, code: `${REPO}/study-planner` },
 
   // التسليمات الجامعية: type "pdf" يفتح أو ينزل الملف، و"video" يشتغل داخل البطاقة
